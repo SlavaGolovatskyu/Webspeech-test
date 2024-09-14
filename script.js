@@ -28,22 +28,20 @@ if (IS_EDGE) {
 } else if (IS_SAFARI) {
   theBestVoices = SAFARI_VOICES;
 }
-
+   
 function populateVoiceList() {
-  console.log(synth.getVoices())
+  console.log(theBestVoices)
   voices = synth.getVoices()
-    .filter((voice) => theBestVoices.map((voice) => voice.name).includes(voice?.name?.toLowerCase()))
-    .sort(function (a, b) {
-      const aname = a.name.toUpperCase();
-      const bname = b.name.toUpperCase();
+    .filter((voice) => {
+      const name = voice.name?.toLowerCase();
+      const uri = voice.voiceURI?.toLowerCase();
 
-      if (aname < bname) {
-        return -1;
-      } else if (aname == bname) {
-        return 0;
-      } else {
-        return +1;
-      }
+      return theBestVoices.find((v) => {
+        if (v?.voiceURI && uri === v.voiceURI?.toLowerCase()) return true;
+        if (name && name === v.name?.toLowerCase()) return true;
+
+        return false;
+      });
     });
 
   const selectedIndex =
