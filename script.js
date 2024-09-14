@@ -1,8 +1,18 @@
 const synth = window.speechSynthesis;
+const user = detect.parse(navigator.userAgent);
+
+const test = {"source":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0","browser":{"family":"Chrome","major":128,"minor":0,"patch":0,"name":"Chrome 128","version":"128"},"os":{"family":"Windows 10","major":null,"minor":null,"patch":null,"name":"Windows 10","version":""},"device":{"family":"Other","type":"Desktop","manufacturer":null}}
+
+const browser = user.browser.family?.toLowerCase();
+
+const IS_EDGE = browser?.includes('chrome') && user.source?.toLowerCase()?.includes('edg');
+const IS_CHROME = browser?.includes('chrome') && !IS_EDGE;
+const IS_SAFARI = browser?.includes('safari');
 
 const inputForm = document.querySelector("form");
 const inputTxt = document.querySelector(".txt");
 const voiceSelect = document.querySelector("select");
+const divTest = document.querySelector('#test1')
 
 const pitch = document.querySelector("#pitch");
 const pitchValue = document.querySelector(".pitch-value");
@@ -11,19 +21,33 @@ const rateValue = document.querySelector(".rate-value");
 
 let voices = [];
 
-function populateVoiceList() {
-  voices = synth.getVoices().sort(function (a, b) {
-    const aname = a.name.toUpperCase();
-    const bname = b.name.toUpperCase();
+let theBestVoices = [];
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+if (IS_EDGE) {
+  theBestVoices = MICROSOFT_EDGE_VOICES;
+} else if (IS_CHROME) {
+  theBestVoices = GOOGLE_CHROME_VOICES;
+} else if (IS_SAFARI) {
+  theBestVoices = SAFARI_VOICES;
+}
 
-    if (aname < bname) {
-      return -1;
-    } else if (aname == bname) {
-      return 0;
-    } else {
-      return +1;
-    }
-  });
+function populateVoiceList() {
+  console.log(synth.getVoices())
+  voices = synth.getVoices()
+    .filter((voice) => theBestVoices.map((voice) => voice.name).includes(voice?.name?.toLowerCase()))
+    .sort(function (a, b) {
+      const aname = a.name.toUpperCase();
+      const bname = b.name.toUpperCase();
+
+      if (aname < bname) {
+        return -1;
+      } else if (aname == bname) {
+        return 0;
+      } else {
+        return +1;
+      }
+    });
+
   const selectedIndex =
     voiceSelect.selectedIndex < 0 ? 0 : voiceSelect.selectedIndex;
   voiceSelect.innerHTML = "";
@@ -55,6 +79,8 @@ function speak() {
     return;
   }
 
+  divTest.textContent = JSON.stringify(user);
+
   if (inputTxt.value !== "") {
     const utterThis = new SpeechSynthesisUtterance(inputTxt.value);
     console.log(utterThis, voices, 'voices');
@@ -82,9 +108,12 @@ function speak() {
   }
 }
 
-inputForm.onsubmit = function (event) {
-  event.preventDefault();
+function stopSpeaking() {
+  console.log('test1')
+  synth.cancel();
+}
 
+function playSpeaking() {
   speak();
 
   inputTxt.blur();

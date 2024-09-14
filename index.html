@@ -18,7 +18,7 @@
       to hear it. change voices using the dropdown menu.
     </p>
 
-    <form>
+    <form onsubmit="event.preventDefault()">
       <label for="txt">Enter text</label>
       <input id="txt" type="text" class="txt" />
       <div>
@@ -34,11 +34,17 @@
         <div class="clearfix"></div>
       </div>
       <select></select>
+      <button onclick="stopSpeaking()">
+        stop
+      </button>
       <div class="controls">
-        <button id="play" type="submit">Play</button>
+        <button id="play" onclick="playSpeaking()">Play</button>
       </div>
+      <div id="test1"></div>
     </form>
 
-    <script src="script.js"></script>
+    <script src="constants.js"></script>
+    <script src="detect.js"></script>
+    <script src="script.js" defer></script>
   </body>
 </html>
