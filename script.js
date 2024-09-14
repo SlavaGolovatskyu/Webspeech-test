@@ -1,16 +1,7 @@
 const synth = window.speechSynthesis;
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
 const user = detect.parse(navigator.userAgent);
 
-const test = {"source":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0","browser":{"family":"Chrome","major":128,"minor":0,"patch":0,"name":"Chrome 128","version":"128"},"os":{"family":"Windows 10","major":null,"minor":null,"patch":null,"name":"Windows 10","version":""},"device":{"family":"Other","type":"Desktop","manufacturer":null}}
-
 const browser = user.browser.family?.toLowerCase();
-
-recognition.continuous = false;
-recognition.lang = 'en-US';
-recognition.interimResults = false;
-recognition.maxAlternatives = 10;
 
 const IS_EDGE = browser?.includes('chrome') && user.source?.toLowerCase()?.includes('edg');
 const IS_CHROME = browser?.includes('chrome') && !IS_EDGE;
@@ -20,7 +11,6 @@ const inputForm = document.querySelector("form");
 const inputTxt = document.querySelector(".txt");
 const voiceSelect = document.querySelector("select");
 const divTest = document.querySelector('#test1');
-const divTest2 = document.querySelector('#test2')
 
 const pitch = document.querySelector("#pitch");
 const pitchValue = document.querySelector(".pitch-value");
@@ -117,7 +107,6 @@ function speak() {
 }
 
 function stopSpeaking() {
-  console.log('test1')
   synth.cancel();
 }
 
@@ -138,33 +127,3 @@ rate.onchange = function () {
 voiceSelect.onchange = function () {
   speak();
 };
-
-function startRecognition() {
-  recognition.start();
-}
-
-recognition.onresult = function(event) {
-  // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
-  // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
-  // It has a getter so it can be accessed like an array
-  // The first [0] returns the SpeechRecognitionResult at the last position.
-  // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
-  // These also have getters so they can be accessed like arrays.
-  // The second [0] returns the SpeechRecognitionAlternative at position 0.
-  // We then return the transcript property of the SpeechRecognitionAlternative object
-  var color = event.results[0][0].transcript;
-  divTest2.textContent = 'Result received: ' + color + '.' + 'confidence';
-  console.log(event.results);
-}
-
-recognition.onspeechend = function() {
-  recognition.stop();
-}
-
-recognition.onnomatch = function(event) {
-  divTest2.textContent = "I didn't recognise that color.";
-}
-
-recognition.onerror = function(event) {
-  divTest2.textContent = 'Error occurred in recognition: ' + event.error;
-}
