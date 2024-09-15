@@ -23,16 +23,22 @@ let theBestVoices = [];
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 if (IS_EDGE) {
   theBestVoices = MICROSOFT_EDGE_VOICES;
-} else if (IS_CHROME) {
+}
+
+if (IS_CHROME) {
   theBestVoices = GOOGLE_CHROME_VOICES;
-} else if (IS_SAFARI) {
+}
+
+if (IS_SAFARI) {
   theBestVoices = SAFARI_VOICES;
 }
    
 function populateVoiceList() {
-  console.log(theBestVoices)
   voices = synth.getVoices()
     .filter((voice) => {
+      // A stop sign from being shot if user uses a different browser from what is being supported right now
+      if (theBestVoices.length === 0) return true;
+
       const name = voice.name?.toLowerCase();
       const uri = voice.voiceURI?.toLowerCase();
 

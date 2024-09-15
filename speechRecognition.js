@@ -11,6 +11,10 @@ function startRecognition() {
   recognition.start();
 }
 
+function stopRecognition() {
+  recognition.stop();
+}
+
 recognition.onresult = function(event) {
   // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
   // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
