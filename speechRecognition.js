@@ -2,16 +2,36 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 const recognition = new SpeechRecognition();
 const divTest2 = document.querySelector('#test2');
 
+let isMicrophoneEnabled = false;
+
+function getLocalStream() {
+  window.navigator.mediaDevices
+    .getUserMedia({ video: false, audio: true })
+    .then((stream) => {
+      isMicrophoneEnabled = true;
+    })
+    .catch((err) => {
+      console.error(`you got an error: ${err}`);
+    });
+}
+
 recognition.continuous = true;
 recognition.lang = 'en-US';
 recognition.interimResults = true;
 recognition.maxAlternatives = 10;
 
 function startRecognition() {
+  if (!isMicrophoneEnabled) {
+    getLocalStream();
+    return;
+  }
+
   recognition.start();
 }
 
 function stopRecognition() {
+  if (!isMicrophoneEnabled) return;
+
   recognition.stop();
 }
 
